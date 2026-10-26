@@ -31,8 +31,8 @@ The built DLL lands in `test_mod/.godot/mono/temp/bin/Debug/` or `test_mod/bin/D
 Copy these files to the game's mods directory:
 
 ```
-<game_dir>/mods/MCPTest/
-├── MCPTest.dll          # from build output
+<game_dir>/mods/mcptest/
+├── mcptest.dll          # MCPTest.dll from the build output, renamed to the manifest id
 └── mod_manifest.json    # from test_mod/
 ```
 
@@ -115,7 +115,7 @@ Methods with parameters:
 **"Bridge not running"**
 - Game must be open AND past the loading screen
 - MCPTest mod must be in the mods list and enabled
-- Check `mods/MCPTest/mod_manifest.json` exists and is valid JSON
+- Check `mods/mcptest/mod_manifest.json` exists and is valid JSON, and that the DLL is named `mcptest.dll` (the game loads `<manifest id>.dll`; on Linux the case must match)
 
 **"Bridge timed out"**
 - Game may be in a loading screen or transition

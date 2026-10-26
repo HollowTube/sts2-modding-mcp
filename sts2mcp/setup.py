@@ -607,7 +607,9 @@ def _ensure_builtin_mods(game_dir: str) -> None:
             continue
 
         target_dir = Path(mods_dir) / mod["mod_id"]
-        target_dll = target_dir / f"{mod['assembly']}.dll"
+        # STS2's mod loader resolves the assembly as <manifest id>.dll; on case-sensitive
+        # filesystems (Linux) MCPTest.dll is not found for id "mcptest".
+        target_dll = target_dir / f"{mod['mod_id']}.dll"
 
         # Skip if already installed and source hasn't changed
         if target_dll.exists():
@@ -655,7 +657,7 @@ def _ensure_builtin_mods(game_dir: str) -> None:
         # Copy PDB if it exists
         pdb = built_dll.with_suffix(".pdb")
         if pdb.exists():
-            shutil.copy2(pdb, target_dir / pdb.name)
+            shutil.copy2(pdb, target_dir / f"{mod['mod_id']}.pdb")
         # Copy manifest
         manifest = source_dir / "mod_manifest.json"
         if manifest.exists():
