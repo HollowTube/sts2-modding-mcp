@@ -256,7 +256,7 @@ public static class BridgeHandler
                 screen = ScreenDetector.GetCurrentScreen(),
                 run_in_progress = RunManager.Instance.IsInProgress,
                 in_combat = CombatManager.Instance?.IsInProgress ?? false,
-                is_player_turn = CombatManager.Instance?.IsPlayPhase ?? false,
+                is_player_turn = CombatManager.Instance?.IsPlayPhase() ?? false,
             });
         }
         catch (Exception ex)
@@ -486,7 +486,7 @@ public static class BridgeHandler
                 in_combat = true,
                 screen = "COMBAT_PLAYER_TURN",
                 round = combatState.RoundNumber,
-                is_player_turn = cm.IsPlayPhase,
+                is_player_turn = cm.IsPlayPhase(),
                 enemies,
                 players = playerStates,
             };
@@ -624,7 +624,7 @@ public static class BridgeHandler
             if (screen.StartsWith("COMBAT") || screen == "HAND_SELECT")
             {
                 var cm = CombatManager.Instance;
-                if (cm?.IsInProgress == true && cm.IsPlayPhase)
+                if (cm?.IsInProgress == true && cm.IsPlayPhase())
                 {
                     var combatState = cm.DebugOnlyGetState();
                     if (combatState != null)
@@ -803,7 +803,7 @@ public static class BridgeHandler
         try
         {
             var cm = CombatManager.Instance;
-            if (cm == null || !cm.IsInProgress || !cm.IsPlayPhase)
+            if (cm == null || !cm.IsInProgress || !cm.IsPlayPhase())
                 return new { error = "Not in combat or not player turn" };
 
             int cardIndex = 0;
@@ -869,7 +869,7 @@ public static class BridgeHandler
         try
         {
             var cm = CombatManager.Instance;
-            if (cm == null || !cm.IsInProgress || !cm.IsPlayPhase)
+            if (cm == null || !cm.IsInProgress || !cm.IsPlayPhase())
                 return new { error = "Not in combat or not player turn" };
 
             var state = RunManager.Instance.DebugOnlyGetState();
@@ -1487,7 +1487,7 @@ public static class BridgeHandler
                 screen_context_type = screenInfo.ActiveScreenType,
                 run_in_progress = RunManager.Instance.IsInProgress,
                 in_combat = CombatManager.Instance?.IsInProgress ?? false,
-                is_player_turn = CombatManager.Instance?.IsPlayPhase ?? false,
+                is_player_turn = CombatManager.Instance?.IsPlayPhase() ?? false,
                 floor = state?.TotalFloor,
                 act = state != null ? state.CurrentActIndex + 1 : (int?)null,
                 current_room = state?.CurrentRoom?.GetType().Name,
@@ -1957,7 +1957,8 @@ public static class BridgeHandler
         catch { }
 
         // Use the game's inventory API directly (like STS2MCP does)
-        var inventory = merchantRoom.Inventory;
+        // v0.107 made shops per-player (MerchantRoom.Inventories); act on the local player's.
+        var inventory = merchantRoom.GetLocalInventory();
         var allEntries = inventory.AllEntries.ToList();
 
         if (index < 0 || index >= allEntries.Count)
@@ -5249,7 +5250,7 @@ public static class BridgeHandler
         snapshot["in_combat"] = cm?.IsInProgress ?? false;
         if (cm?.IsInProgress == true)
         {
-            snapshot["is_player_turn"] = cm.IsPlayPhase;
+            snapshot["is_player_turn"] = cm.IsPlayPhase();
             var cs = cm.DebugOnlyGetState();
             if (cs != null)
             {
