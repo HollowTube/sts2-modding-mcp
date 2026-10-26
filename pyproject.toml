@@ -4,7 +4,7 @@ version = "3.8.0"
 description = "MCP server for Slay the Spire 2 modding - reverse-engineered game data, mod scaffolding, building, and deployment"
 requires-python = ">=3.11"
 dependencies = [
-    "mcp[cli]>=1.0.0",
+    "mcp[cli]>=1.0.0,<2",   # server uses the 1.x low-level Server decorators (list_tools); 2.x removed them
 ]
 
 [project.optional-dependencies]

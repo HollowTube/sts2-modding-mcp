@@ -1,4 +1,4 @@
-mcp[cli]>=1.0.0
+mcp[cli]>=1.0.0,<2
 
 # Optional — faster file watching (falls back to polling if not installed)
 # pip install watchdog
